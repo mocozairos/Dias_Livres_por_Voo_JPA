@@ -52,6 +52,16 @@ def puxar_dados_phoenix():
 
     st.session_state.df_router['Reserva Mae'] = st.session_state.df_router['Reserva'].str[:10]  
 
+    lista_combos = ['COMBO FLEXÍVEL 2 PASSEIOS', 'COMBO FLEXÍVEL 3 PASSEIOS', 'COMBO FLEXÍVEL 4 PASSEIOS']
+
+    st.session_state.df_router['n_servicos'] = 1
+
+    st.session_state.df_router.loc[st.session_state.df_router['Servico']==lista_combos[0], 'n_servicos'] = 2
+
+    st.session_state.df_router.loc[st.session_state.df_router['Servico']==lista_combos[1], 'n_servicos'] = 3
+
+    st.session_state.df_router.loc[st.session_state.df_router['Servico']==lista_combos[2], 'n_servicos'] = 4
+
 def calcular_media_estadia():
 
     df_in_geral = st.session_state.df_router[(st.session_state.df_router['Tipo de Servico']=='IN') & (st.session_state.df_router['Status do Servico']!='CANCELADO') & (st.session_state.df_router['Status da Reserva']!='CANCELADO') & 
@@ -138,11 +148,11 @@ df_tour_transfer = st.session_state.df_router[((st.session_state.df_router['Tipo
                                               (st.session_state.df_router['Status da Reserva']!='CANCELADO') & (st.session_state.df_router['Status da Reserva']!='PENDENCIA DE IMPORTAÇÃO') & 
                                               (st.session_state.df_router['Reserva Mae'].isin(lista_reservas_in))].reset_index(drop=True)
 
-df_tour_transfer_group = df_tour_transfer.groupby(['Data Execucao', 'Reserva Mae'])['Servico'].count().reset_index()
+df_tour_transfer_group = df_tour_transfer.groupby(['Data Execucao', 'Reserva Mae'])['n_servicos'].sum().reset_index()
 
-df_tour_transfer_group = df_tour_transfer_group.groupby(['Reserva Mae'])['Servico'].count().reset_index()
+df_tour_transfer_group = df_tour_transfer_group.groupby(['Reserva Mae'])['n_servicos'].sum().reset_index()
 
-df_tour_transfer_group = df_tour_transfer_group.rename(columns={'Servico': 'Qtd. Servicos'})
+df_tour_transfer_group = df_tour_transfer_group.rename(columns={'n_servicos': 'Qtd. Servicos'})
 
 df_in_out = pd.merge(df_in_out, df_tour_transfer_group, on='Reserva Mae', how='left')
 
