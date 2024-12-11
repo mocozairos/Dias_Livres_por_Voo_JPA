@@ -4,12 +4,6 @@ import decimal
 import pandas as pd
 from st_aggrid import AgGrid, GridOptionsBuilder
 
-st.set_page_config(layout='wide')
-
-st.title('Dias Livres por Voo - João Pessoa')
-
-st.divider()
-
 def gerar_df_phoenix(vw_name, base_luck):
     # Parametros de Login AWS
     config = {
@@ -69,10 +63,7 @@ def calcular_media_estadia():
 
     df_in_out_geral = df_in_out_geral[~pd.isna(df_in_out_geral['Data OUT'])].reset_index(drop=True)
 
-    df_in_out_geral['Data IN'] = pd.to_datetime(df_in_out_geral['Data IN'])
-    df_in_out_geral['Data OUT'] = pd.to_datetime(df_in_out_geral['Data OUT'])
-
-    df_in_out_geral['Dias Estadia'] = (df_in_out_geral['Data OUT'] - df_in_out_geral['Data IN']).dt.days
+    df_in_out_geral['Dias Estadia'] = (pd.to_datetime(df_in_out_geral['Data OUT']) - pd.to_datetime(df_in_out_geral['Data IN'])).dt.days
 
     df_in_out_geral['Dias Estadia'] = df_in_out_geral['Dias Estadia'].astype(int)
 
@@ -202,6 +193,8 @@ def plotar_tabela_row_todos_servicos(df_ref_2, row1):
         container_dataframe.dataframe(df_ref_2[['Reserva Mae', 'Servico', 'Voo IN', 'Data IN', 'Data OUT', 'Qtd. Servicos', 'Dias Estadia', 'Dias Livres']]\
                                       .sort_values(by='Voo IN'), hide_index=True, use_container_width=True)     
 
+st.set_page_config(layout='wide')
+
 # Puxando dados do Phoenix
 
 if not 'df_router' in st.session_state:
@@ -209,6 +202,10 @@ if not 'df_router' in st.session_state:
     with st.spinner('Puxando dados do Phoenix...'):
 
         puxar_dados_phoenix()
+
+st.title('Dias Livres por Voo - João Pessoa')
+
+st.divider()
 
 row1 = st.columns(2)
 
