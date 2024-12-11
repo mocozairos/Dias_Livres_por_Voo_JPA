@@ -173,7 +173,7 @@ def plotar_tabela_dias_livres_por_hotel(df_ref_2):
 
     return selected_rows_3
 
-def plotar_tabela_row_servico_especifico(df_ref, row2):
+def plotar_tabela_row_servico_especifico(df_ref_3, row2):
 
     with row2[0]:
 
