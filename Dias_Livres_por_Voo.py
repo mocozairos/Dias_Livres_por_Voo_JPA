@@ -288,7 +288,7 @@ if len(df_in_out)>0:
 
             if selected_rows_2 is not None and len(selected_rows_2)>0:
 
-                df_ref_2 = df_ref = df_in_out[(df_in_out['Voo IN'].isin(selected_rows['Voo IN'].unique().tolist())) & 
+                df_ref_2 = df_in_out[(df_in_out['Voo IN'].isin(selected_rows['Voo IN'].unique().tolist())) & 
                                             (df_in_out['Servico'].isin(selected_rows_2['Servico'].unique().tolist()))].reset_index(drop=True)
                 
                 plotar_tabela_row_todos_servicos(df_ref_2, row1)
