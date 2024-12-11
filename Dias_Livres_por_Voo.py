@@ -265,31 +265,33 @@ df_in_out = calcular_estadia_dias_livres(df_in_out)
 
 # Plotando tabela com voos e pegando a seleção do usuário
 
-selected_rows = plotar_tabela_com_voos_dias_livres(df_in_out)
+if len(df_in_out)>0:
 
-# Segunda plotagem de tabelas depois do usuário selecionar voos e serviços
+    selected_rows = plotar_tabela_com_voos_dias_livres(df_in_out)
 
-if selected_rows is not None and len(selected_rows)>0:
+    # Segunda plotagem de tabelas depois do usuário selecionar voos e serviços
 
-    df_ref = df_in_out[df_in_out['Voo IN'].isin(selected_rows['Voo IN'].unique().tolist())].reset_index(drop=True)
+    if selected_rows is not None and len(selected_rows)>0:
 
-    total_dias_livres = df_ref['Dias Livres'].sum()
+        df_ref = df_in_out[df_in_out['Voo IN'].isin(selected_rows['Voo IN'].unique().tolist())].reset_index(drop=True)
 
-    with row1[1]:
+        total_dias_livres = df_ref['Dias Livres'].sum()
 
-        st.subheader(f'Total de dias livres dos voos selecionados = {int(total_dias_livres)}')
+        with row1[1]:
 
-    if servico!='Todos':
+            st.subheader(f'Total de dias livres dos voos selecionados = {int(total_dias_livres)}')
 
-        plotar_tabela_row_servico_especifico(df_ref, row2)
+        if servico!='Todos':
 
-    else:
+            plotar_tabela_row_servico_especifico(df_ref, row2)
 
-        selected_rows_2 = plotar_tabela_servicos_no_voo(df_in_out)
+        else:
 
-        if selected_rows_2 is not None and len(selected_rows_2)>0:
+            selected_rows_2 = plotar_tabela_servicos_no_voo(df_in_out)
 
-            df_ref_2 = df_ref = df_in_out[(df_in_out['Voo IN'].isin(selected_rows['Voo IN'].unique().tolist())) & 
-                                          (df_in_out['Servico'].isin(selected_rows_2['Servico'].unique().tolist()))].reset_index(drop=True)
-            
-            plotar_tabela_row_todos_servicos(df_ref_2, row1)
+            if selected_rows_2 is not None and len(selected_rows_2)>0:
+
+                df_ref_2 = df_ref = df_in_out[(df_in_out['Voo IN'].isin(selected_rows['Voo IN'].unique().tolist())) & 
+                                            (df_in_out['Servico'].isin(selected_rows_2['Servico'].unique().tolist()))].reset_index(drop=True)
+                
+                plotar_tabela_row_todos_servicos(df_ref_2, row1)
