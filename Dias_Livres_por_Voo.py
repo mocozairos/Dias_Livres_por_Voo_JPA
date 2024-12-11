@@ -98,7 +98,11 @@ def gerar_df_in_filtro_servicos(df_in):
 
             df_in = df_in[df_in['Servico']==servico].reset_index(drop=True)
 
-    return df_in, servico
+        return df_in, servico
+    
+    else:
+
+        return df_in, None
 
 def inserir_datas_in_out_voo_in(df_in):
 
