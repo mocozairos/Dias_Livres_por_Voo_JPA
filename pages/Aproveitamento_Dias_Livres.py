@@ -95,26 +95,26 @@ def puxar_dados_phoenix():
 
     st.session_state.df_sales['Data_Servico'] = pd.to_datetime(st.session_state.df_sales['Data_Servico'], unit='s').dt.date
 
-    st.session_state.df_router = gerar_df_router('test_phoenix_joao_pessoa')
+    st.session_state.df_router_2 = gerar_df_router('test_phoenix_joao_pessoa')
 
     lista_combos = ['COMBO FLEXÍVEL 2 PASSEIOS', 'COMBO FLEXÍVEL 3 PASSEIOS', 'COMBO FLEXÍVEL 4 PASSEIOS']
 
-    st.session_state.df_router = st.session_state.df_router[(st.session_state.df_router['Status do Servico']!='CANCELADO') & (st.session_state.df_router['Status da Reserva']!='CANCELADO') & 
-                                                            (st.session_state.df_router['Status da Reserva']!='PENDENCIA DE IMPORTAÇÃO') & 
-                                                            (~pd.isna(st.session_state.df_router['Status do Servico'])) & 
-                                                            (~st.session_state.df_router['Servico'].isin(lista_combos)) & 
-                                                            (st.session_state.df_router['Servico'] != 'FAZER CONTATO - SEM TRF IN ') & 
-                                                            (st.session_state.df_router['Servico'] != 'GUIA BASE NOTURNO') & 
-                                                            (st.session_state.df_router['Servico'] != 'GUIA BASE DIURNO ') & 
-                                                            (st.session_state.df_router['Servico'] != 'EXTRA')].reset_index(drop=True)
+    st.session_state.df_router_2 = st.session_state.df_router_2[(st.session_state.df_router_2['Status do Servico']!='CANCELADO') & (st.session_state.df_router_2['Status da Reserva']!='CANCELADO') & 
+                                                            (st.session_state.df_router_2['Status da Reserva']!='PENDENCIA DE IMPORTAÇÃO') & 
+                                                            (~pd.isna(st.session_state.df_router_2['Status do Servico'])) & 
+                                                            (~st.session_state.df_router_2['Servico'].isin(lista_combos)) & 
+                                                            (st.session_state.df_router_2['Servico'] != 'FAZER CONTATO - SEM TRF IN ') & 
+                                                            (st.session_state.df_router_2['Servico'] != 'GUIA BASE NOTURNO') & 
+                                                            (st.session_state.df_router_2['Servico'] != 'GUIA BASE DIURNO ') & 
+                                                            (st.session_state.df_router_2['Servico'] != 'EXTRA')].reset_index(drop=True)
 
-    st.session_state.df_router['Data Execucao'] = pd.to_datetime(st.session_state.df_router['Data Execucao'])
+    st.session_state.df_router_2['Data Execucao'] = pd.to_datetime(st.session_state.df_router_2['Data Execucao'])
 
-    st.session_state.df_router['Reserva Mae'] = st.session_state.df_router['Reserva'].str[:10]
+    st.session_state.df_router_2['Reserva Mae'] = st.session_state.df_router_2['Reserva'].str[:10]
 
 def gerar_df_ultimos_servicos():
 
-    df_ultimos_servicos = (st.session_state.df_router.groupby('Reserva Mae', as_index=False).agg({'Data Execucao': ['max', 'min']}))
+    df_ultimos_servicos = (st.session_state.df_router_2.groupby('Reserva Mae', as_index=False).agg({'Data Execucao': ['max', 'min']}))
 
     df_ultimos_servicos.columns = ['Reserva Mae', 'Data Ultimo Servico', 'Data Primeiro Servico']
 
@@ -131,7 +131,7 @@ def gerar_df_ultimos_servicos():
 
 def incluir_data_in_out(df_ultimos_servicos_filtrado):
 
-    df_in = st.session_state.df_router[st.session_state.df_router['Tipo de Servico']=='IN'].reset_index(drop=True)
+    df_in = st.session_state.df_router_2[st.session_state.df_router_2['Tipo de Servico']=='IN'].reset_index(drop=True)
 
     df_in['Data Execucao'] = df_in['Data Execucao'].dt.date
 
@@ -141,7 +141,7 @@ def incluir_data_in_out(df_ultimos_servicos_filtrado):
 
     df_ultimos_servicos_filtrado = df_ultimos_servicos_filtrado[~pd.isna(df_ultimos_servicos_filtrado['Data IN'])].reset_index(drop=True)
 
-    df_out = st.session_state.df_router[st.session_state.df_router['Tipo de Servico']=='OUT'].reset_index(drop=True)
+    df_out = st.session_state.df_router_2[st.session_state.df_router_2['Tipo de Servico']=='OUT'].reset_index(drop=True)
 
     df_out['Data Execucao'] = df_out['Data Execucao'].dt.date
 
@@ -182,7 +182,7 @@ def contabilizar_servicos_depois_in_e_total(df_ultimos_servicos_filtrado):
         df_ultimos_servicos_filtrado.at[index, 'Servicos Depois do IN'] = len(st.session_state.df_sales[(st.session_state.df_sales['Reserva Mae']==reserva) & 
                                                                                                         (st.session_state.df_sales['Data_Servico']>=data_in)]['Data Execucao'].unique().tolist())
 
-        df_ultimos_servicos_filtrado.at[index, 'Total Servicos'] = len(st.session_state.df_router[(st.session_state.df_router['Reserva Mae']==reserva)]['Data Execucao'].unique().tolist())
+        df_ultimos_servicos_filtrado.at[index, 'Total Servicos'] = len(st.session_state.df_router_2[(st.session_state.df_router_2['Reserva Mae']==reserva)]['Data Execucao'].unique().tolist())
 
     return df_ultimos_servicos_filtrado
 
