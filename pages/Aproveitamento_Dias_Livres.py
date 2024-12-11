@@ -219,7 +219,7 @@ st.set_page_config(layout='wide')
 
 # Puxar dados do Phoenix
 
-if not 'df_router' in st.session_state:
+if not 'df_sales' in st.session_state:
 
     with st.spinner('Puxando dados do Phoenix...'):
 
